@@ -1,0 +1,37 @@
+spring:
+  cloud:
+    stream:
+      function:
+        definition: toUpperCase|process
+      bindings:
+        process-in-0:
+          destination: words
+        process-out-0:
+          destination: counts
+        toUpperCase-in-0:
+          destination: word
+        toUpperCase-out-0:
+          destination: ucase
+      kafka:
+        streams:
+          bindings:
+            process-out-0:
+              producer:
+                nativeDecoding: false
+                valueSerde: org.springframework.kafka.support.serializer.JsonSerde
+          binder:
+            configuration:
+              commit.interval.ms: 100
+              default:
+                key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+##Enable metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics
+##Enable logging to debug for spring kafka config
+logging:
+  level:
+    org.springframework.kafka: DEBUG
